@@ -9,7 +9,7 @@ interface FloatingCardProps {
 export const FloatingCard: React.FC<FloatingCardProps> = ({
   children,
   className = "",
-  glowColor = "rgba(0, 242, 254, 0.15)"
+  glowColor = "rgba(16, 185, 129, 0.08)"
 }) => {
   const [transform, setTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)");
 
@@ -35,7 +35,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
         boxShadow: `0 20px 40px ${glowColor}`,
         transition: "transform 0.15s ease-out, box-shadow 0.2s ease"
       }}
-      className={`rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-white/10 ${className}`}
+      className={`rounded-3xl bg-white/80 backdrop-blur-2xl border border-slate-200/80 shadow-lg ${className}`}
     >
       {children}
     </div>
