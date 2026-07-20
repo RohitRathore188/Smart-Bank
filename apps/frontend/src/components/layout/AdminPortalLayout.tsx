@@ -1,103 +1,88 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-interface AdminLayoutProps {
+interface AdminPortalLayoutProps {
   children: React.ReactNode;
 }
 
-export const AdminPortalLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+export const AdminPortalLayout: React.FC<AdminPortalLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
 
-  const navItems = [
-    { label: "Global Command", path: "/admin/dashboard", icon: "⚡" },
-    { label: "User Management", path: "/admin/users", icon: "👤" },
-    { label: "Staff Directory", path: "/admin/employees", icon: "👥" },
-    { label: "Bank Settings", path: "/admin/bank-settings", icon: "⚙️" },
-    { label: "Yield & Rates", path: "/admin/rates", icon: "📈" },
-    { label: "Audit Logs", path: "/admin/audit-logs", icon: "📑" },
-    { label: "System Health", path: "/admin/health", icon: "🟢" },
-    { label: "Platform Analytics", path: "/admin/analytics", icon: "📊" },
-    { label: "Global Alerts", path: "/admin/notifications", icon: "📢" },
-    { label: "Theme Engine", path: "/admin/theme", icon: "🎨" },
+  const navigation = [
+    { name: "Global Command Cockpit", href: "/admin/dashboard", icon: "⚡" },
+    { name: "Branch & IFSC Directory", href: "/admin/bank-settings", icon: "🏢" },
+    { name: "Interest Rate Configurator", href: "/admin/rates", icon: "📈" },
+    { name: "CDC & Security Audit Logs", href: "/admin/audit-logs", icon: "🔒" },
+    { name: "Global Customer Directory", href: "/admin/users", icon: "👥" },
+    { name: "Staff Roster Provisioning", href: "/admin/employees", icon: "👤" },
+    { name: "System Health & Backups", href: "/admin/health", icon: "💾" },
+    { name: "Global Telemetry Analytics", href: "/admin/analytics", icon: "📊" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#080A0F] text-white font-sans flex flex-col antialiased">
-      {/* Top Bar */}
-      <header className="h-16 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-purple-500 selection:text-white">
+      {/* Admin Header */}
+      <header className="h-16 border-b border-slate-200 bg-white/80 backdrop-blur-2xl sticky top-0 z-40 px-4 sm:px-8 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link to="/admin/dashboard" className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-600 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-cyan-500/20">
-              AD
+          <Link to="/admin/dashboard" className="flex items-center space-x-2">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center font-black text-xl shadow-md text-white">
+              ⚡
             </div>
-            <span className="font-bold text-lg tracking-tight hidden sm:inline-block">
-              SmartBank <span className="text-cyan-400 font-extrabold">Super Admin</span>
-            </span>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight text-slate-900">
+                SUPER ADMIN COMMAND CENTER
+              </span>
+              <span className="block text-[9px] font-mono text-purple-600 uppercase tracking-widest -mt-1 font-bold">
+                SmartBank Global Governance Platform
+              </span>
+            </div>
           </Link>
-          <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/20 px-2.5 py-1 rounded-full border border-cyan-500/30">
-            GLOBAL SYSTEM COMMAND
-          </span>
         </div>
 
-        {/* User Info & Logout */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <div className="text-right hidden sm:block">
-            <div className="text-xs font-semibold">{user?.first_name} {user?.last_name}</div>
-            <div className="text-[10px] text-cyan-400 font-mono">Platform Super Administrator</div>
+            <div className="text-xs font-bold text-slate-900">{user?.first_name || "Super"} {user?.last_name || "Admin"}</div>
+            <div className="text-[10px] text-slate-500 font-mono">GLOBAL SYSTEM ADMINISTRATOR</div>
           </div>
           <button
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
-            className="px-3 py-1.5 bg-white/10 hover:bg-red-500/20 text-xs font-semibold rounded-xl text-slate-300 hover:text-red-400 transition-colors"
+            onClick={logout}
+            className="p-2 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 transition-colors text-xs font-bold border border-slate-200"
+            title="Logout"
           >
-            Sign Out
+            🚪
           </button>
         </div>
       </header>
 
-      {/* Main Body */}
+      {/* Main Container */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar Dock */}
-        <aside className="w-64 border-r border-white/10 bg-slate-900/40 backdrop-blur-xl p-4 hidden md:flex flex-col justify-between shrink-0">
-          <nav className="space-y-1">
-            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              System Administration
-            </div>
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    isActive
-                      ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/30 shadow-md font-semibold"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span className="text-base">{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-xs text-slate-300 space-y-1">
-            <div className="flex items-center justify-between font-bold text-cyan-300">
-              <span>FastAPI Throughput</span>
-              <span className="font-mono text-emerald-400">8.4k RPS</span>
-            </div>
-            <div className="text-[10px] text-slate-400">Zero Trust API Guard Enforced</div>
+        {/* Admin Navigation */}
+        <aside className="w-64 border-r border-slate-200 bg-white/60 p-4 space-y-2 hidden lg:block overflow-y-auto">
+          <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
+            Platform Governance
           </div>
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-purple-500/10 text-purple-800 border border-purple-500/30 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                <span className="text-base">{item.icon}</span>
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
         </aside>
 
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8">
           {children}
         </main>
       </div>
