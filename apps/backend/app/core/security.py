@@ -6,14 +6,18 @@ import secrets
 
 from app.core.config import settings
 
-# Password Hashing
+# Password Hashing Context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    # Truncate password to 72 bytes to prevent bcrypt length errors
+    truncated = plain_password[:72]
+    return pwd_context.verify(truncated, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    # Truncate password to 72 bytes to prevent bcrypt length errors
+    truncated = password[:72]
+    return pwd_context.hash(truncated)
 
 # JWT Tokens
 def create_access_token(subject: str, roles: list[str], tenant_id: str, expires_delta: Optional[timedelta] = None) -> str:
