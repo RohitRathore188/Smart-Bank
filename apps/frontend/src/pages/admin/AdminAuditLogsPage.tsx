@@ -1,37 +1,47 @@
 import React from "react";
 import { AdminPortalLayout } from "../../components/layout/AdminPortalLayout";
+import { PageTransition } from "../../components/animations/PageTransition";
+import { FloatingCard } from "../../components/animations/MicroInteractions";
 
 export const AdminAuditLogsPage: React.FC = () => {
   const auditLogs = [
-    { id: "aud_901", table: "accounts", action: "UPDATE", actor: "usr_101", ip: "192.168.1.1", timestamp: "2026-07-20 10:52:01" },
-    { id: "aud_902", table: "journals", action: "INSERT", actor: "usr_102", ip: "10.0.0.42", timestamp: "2026-07-20 10:48:14" },
-    { id: "aud_903", table: "cards", action: "UPDATE", actor: "usr_101", ip: "192.168.1.1", timestamp: "2026-07-20 10:42:00" },
+    { timestamp: "2026-07-20 14:52:19", actor: "SUPER_ADMIN", action: "UPDATE_INTEREST_RATE", table: "rates_config", ip: "103.21.124.9" },
+    { timestamp: "2026-07-20 14:45:10", actor: "TELLER_1082", action: "CASH_DEPOSIT_AUTH", table: "double_entry_ledger", ip: "192.168.1.45" },
+    { timestamp: "2026-07-20 14:20:05", actor: "CUSTOMER_9102", action: "UPI_TRANSFER_EXECUTED", table: "transactions", ip: "49.207.182.11" },
   ];
 
   return (
     <AdminPortalLayout>
-      <div className="space-y-6 max-w-7xl mx-auto font-sans">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-extrabold text-white">System CDC Audit Trail</h1>
-            <p className="text-sm text-slate-400">Immutable Change Data Capture log stream across all database tables</p>
-          </div>
-          <button onClick={() => alert("Exporting audit trail CSV...")} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-xl text-white">
-            📥 Export Audit Log
-          </button>
-        </div>
-
-        <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 space-y-3 font-mono text-xs">
-          {auditLogs.map((log) => (
-            <div key={log.id} className="p-3.5 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
-              <div>
-                <span className="font-bold text-cyan-400">[{log.action}]</span> <span className="text-white font-bold">{log.table}</span> — Actor: {log.actor} ({log.ip})
-              </div>
-              <span className="text-slate-500">{log.timestamp}</span>
+      <PageTransition>
+        <div className="space-y-6 max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                Immutable Change Data Capture (CDC) Audit Logs
+              </h1>
+              <p className="text-sm text-slate-400">Cryptographically Sealed Audit Trail & IP Security Logs</p>
             </div>
-          ))}
+          </div>
+
+          <FloatingCard className="p-6 space-y-4">
+            <h3 className="font-bold text-white text-base">Live CDC Audit Log Stream</h3>
+
+            <div className="space-y-3 font-mono text-xs">
+              {auditLogs.map((log, idx) => (
+                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <span className="text-emerald-400 font-bold">[{log.timestamp}]</span>{" "}
+                    <span className="text-white font-bold">{log.actor}</span> performed{" "}
+                    <span className="text-cyan-300">{log.action}</span> on <span className="text-amber-300">{log.table}</span>
+                  </div>
+                  <div className="text-slate-400">IP: {log.ip}</div>
+                </div>
+              ))}
+            </div>
+          </FloatingCard>
         </div>
-      </div>
+      </PageTransition>
     </AdminPortalLayout>
   );
 };
