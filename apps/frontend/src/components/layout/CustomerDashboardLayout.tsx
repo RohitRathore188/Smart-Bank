@@ -1,88 +1,87 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { AICopilotDrawer } from "../ai-copilot/AICopilotDrawer";
 
-interface CustomerLayoutProps {
+interface CustomerDashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export const CustomerDashboardLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
+export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
-  const [isAIDrawerOpen, setIsAIDrawerOpen] = useState(false);
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
-  const navItems = [
-    { label: "Overview", path: "/dashboard", icon: "🟢" },
-    { label: "Vaults & FX", path: "/vaults", icon: "🌐" },
-    { label: "Transactions", path: "/transactions", icon: "📑" },
-    { label: "Cards (3D)", path: "/cards", icon: "💳" },
-    { label: "Beneficiaries", path: "/beneficiaries", icon: "⚡" },
-    { label: "Loans & Credit", path: "/loans", icon: "💎" },
-    { label: "Deposits & Export", path: "/deposits", icon: "📥" },
-    { label: "Notifications", path: "/notifications", icon: "🔔" },
-    { label: "Settings", path: "/settings", icon: "⚙️" },
+  const navigation = [
+    { name: "Dashboard", href: "/dashboard", icon: "📊" },
+    { name: "Accounts & FD", href: "/vaults", icon: "🏛️" },
+    { name: "UPI & Passbook", href: "/transactions", icon: "⚡" },
+    { name: "RuPay Cards", href: "/cards", icon: "💳" },
+    { name: "Pre-Approved Credit", href: "/loans", icon: "💎" },
+    { name: "Beneficiaries", href: "/beneficiaries", icon: "👥" },
+    { name: "Deposits & Tax", href: "/deposits", icon: "📄" },
+    { name: "SmartBank AI Hub", href: "/copilot", icon: "🤖" },
+    { name: "Notifications", href: "/notifications", icon: "🔔" },
+    { name: "Settings", href: "/settings", icon: "⚙️" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#080A0F] text-white font-sans flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
-      {/* Top Bar Navigation */}
-      <header className="h-16 border-b border-white/10 bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link to="/dashboard" className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-cyan-500/20">
-              S
-            </div>
-            <span className="font-bold text-lg tracking-tight hidden sm:inline-block">
-              SmartBank <span className="text-cyan-400 font-extrabold">AI</span>
-            </span>
-          </Link>
+    <div className="min-h-screen bg-[#080A0F] text-white flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+      {/* Live Indian FX Ticker Bar */}
+      <div className="bg-slate-950/80 border-b border-white/5 px-4 py-1.5 text-[11px] font-mono flex items-center justify-between overflow-x-auto">
+        <div className="flex items-center space-x-6 shrink-0">
+          <span className="flex items-center space-x-1.5 text-emerald-400 font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>RBI LIVE TICKER</span>
+          </span>
+          <span className="text-slate-400">USD/INR: <strong className="text-white">₹83.42</strong> <span className="text-emerald-400">▲ +0.04</span></span>
+          <span className="text-slate-400">EUR/INR: <strong className="text-white">₹90.85</strong> <span className="text-red-400">▼ -0.12</span></span>
+          <span className="text-slate-400">GBP/INR: <strong className="text-white">₹107.15</strong> <span className="text-emerald-400">▲ +0.18</span></span>
+          <span className="text-slate-400">Gold (24K): <strong className="text-amber-300">₹74,200 /10g</strong></span>
+        </div>
+        <div className="text-slate-400 shrink-0 hidden md:block">
+          DICGC Insured up to ₹5 Lakhs per depositor 🇮🇳
+        </div>
+      </div>
 
-          {/* Live FX Ticker */}
-          <div className="hidden md:flex items-center space-x-3 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 text-xs">
-            <span className="text-slate-400">FX Stream:</span>
-            <span className="font-mono text-emerald-400">USD/EUR 0.918 ▲</span>
-            <span className="font-mono text-cyan-400">GBP/USD 1.274 ▲</span>
-          </div>
+      {/* Top Navigation Bar */}
+      <header className="h-16 border-b border-white/10 bg-slate-900/60 backdrop-blur-2xl sticky top-0 z-40 px-4 sm:px-8 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Link to="/dashboard" className="flex items-center space-x-2">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-blue-600 flex items-center justify-center font-black text-xl shadow-lg shadow-emerald-500/20">
+              🇮🇳
+            </div>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-cyan-300 bg-clip-text text-transparent">
+                SMARTBANK INDIA
+              </span>
+              <span className="block text-[9px] font-mono text-emerald-400 uppercase tracking-widest -mt-1">
+                Bharat AI Banking
+              </span>
+            </div>
+          </Link>
         </div>
 
-        {/* Top Bar Actions */}
+        {/* Action Controls & User Dropdown */}
         <div className="flex items-center space-x-3">
-          {/* AI Assistant Button */}
           <button
-            onClick={() => setIsAIDrawerOpen(true)}
-            className="flex items-center space-x-2 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 hover:border-cyan-400 px-3.5 py-1.5 rounded-full text-xs font-semibold text-cyan-300 shadow-lg shadow-cyan-500/10 transition-all duration-200"
+            onClick={() => setIsCopilotOpen(true)}
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 hover:border-emerald-500/60 text-xs font-bold text-emerald-300 flex items-center space-x-2 transition-all duration-200 shadow-md active:scale-95"
           >
-            <span>🤖</span>
-            <span>Gemini AI</span>
+            <span>🤖 Gemini AI Assistant</span>
           </button>
 
-          {/* Notifications Trigger */}
-          <Link
-            to="/notifications"
-            className="relative p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
-          >
-            <span>🔔</span>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-cyan-400 rounded-full animate-ping" />
-          </Link>
+          <div className="h-6 w-[1px] bg-white/10 hidden sm:block"></div>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-3 pl-2 border-l border-white/10">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-bold text-sm flex items-center justify-center shadow-md">
-              {user?.first_name?.[0] || "A"}
-            </div>
-            <div className="hidden lg:block text-left">
-              <div className="text-xs font-semibold leading-tight">{user?.first_name} {user?.last_name}</div>
-              <div className="text-[10px] text-cyan-400 font-mono">Personal Vault</div>
+          <div className="flex items-center space-x-3">
+            <div className="text-right hidden sm:block">
+              <div className="text-xs font-bold text-white">{user?.first_name || "Rohit"} {user?.last_name || "Rathore"}</div>
+              <div className="text-[10px] text-slate-400 font-mono">PAN: ABCDE1234F</div>
             </div>
             <button
-              onClick={() => {
-                logout();
-                navigate("/login");
-              }}
-              className="text-xs text-slate-400 hover:text-red-400 transition-colors px-2"
-              title="Sign Out"
+              onClick={logout}
+              className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors text-xs font-bold border border-white/10"
+              title="Logout"
             >
               🚪
             </button>
@@ -90,51 +89,48 @@ export const CustomerDashboardLayout: React.FC<CustomerLayoutProps> = ({ childre
         </div>
       </header>
 
-      {/* Main Body Layout */}
+      {/* Main Page Layout Container */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar Dock (Desktop) */}
-        <aside className="w-64 border-r border-white/10 bg-slate-900/40 backdrop-blur-xl p-4 hidden md:flex flex-col justify-between shrink-0">
-          <nav className="space-y-1">
-            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Vault Navigation
-            </div>
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-500/5 font-semibold"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span className="text-base">{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+        {/* Sidebar Dock Navigation */}
+        <aside className="w-64 border-r border-white/10 bg-slate-950/40 p-4 space-y-2 hidden lg:block overflow-y-auto">
+          <div className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider px-3 mb-2">
+            Main Services
+          </div>
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-gradient-to-r from-emerald-500/20 to-cyan-600/20 text-emerald-300 border border-emerald-500/30 shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <span className="text-base">{item.icon}</span>
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
 
-          {/* System Status Footnote */}
-          <div className="p-3 bg-white/5 border border-white/10 rounded-2xl text-xs space-y-1">
-            <div className="flex items-center justify-between text-slate-400">
-              <span>System Health</span>
-              <span className="text-emerald-400 font-bold">⚡ 99.99%</span>
+          <div className="pt-6">
+            <div className="p-4 rounded-2xl bg-gradient-to-b from-emerald-950/40 to-slate-900 border border-emerald-500/20 text-center space-y-2">
+              <div className="text-2xl">🛡️</div>
+              <div className="text-xs font-bold text-white">RBI Compliance Shield</div>
+              <div className="text-[10px] text-slate-400">256-bit AES Encryption with instant Fraud Freeze</div>
             </div>
-            <div className="text-[10px] text-slate-500 font-mono">Clean Architecture v1.0</div>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative">
+        {/* Dynamic Page Content */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8">
           {children}
         </main>
       </div>
 
-      {/* Gemini AI Floating Drawer Component */}
-      <AICopilotDrawer isOpen={isAIDrawerOpen} onClose={() => setIsAIDrawerOpen(false)} />
+      {/* Slide-over Gemini AI Copilot Drawer */}
+      <AICopilotDrawer isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} />
     </div>
   );
 };
