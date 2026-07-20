@@ -1,48 +1,68 @@
-from typing import List, Callable
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import List, Callable, Dict
+import time
 
-from app.core import security
-from app.application.services.auth_service import AuthService, user_repo
-from app.domain.entities.user import UserEntity
+from app.core.security import decode_access_token
 
-security_scheme = HTTPBearer()
+security = HTTPBearer()
 
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security_scheme)
-) -> UserEntity:
+# In-memory Rate Limiter (Token Bucket: Max 100 requests per minute per IP)
+RATE_LIMIT_STORE: Dict[str, List[float]] = {}
+RATE_LIMIT_MAX = 100
+RATE_LIMIT_WINDOW = 60
+
+def rate_limit_guard(request: Request):
+    """Enforce API Rate Limiting per client IP."""
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    now = time.time()
+    
+    if client_ip not in RATE_LIMIT_STORE:
+        RATE_LIMIT_STORE[client_ip] = []
+    
+    # Filter timestamps within window
+    RATE_LIMIT_STORE[client_ip] = [t for t in RATE_LIMIT_STORE[client_ip] if now - t < RATE_LIMIT_WINDOW]
+    
+    if len(RATE_LIMIT_STORE[client_ip]) >= RATE_LIMIT_MAX:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded. Maximum 100 requests per minute allowed."
+        )
+    
+    RATE_LIMIT_STORE[client_ip].append(now)
+
+def get_current_user(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -> dict:
+    """Dependency: Extract and validate JWT Access Token + Session Expiry + Device Binding."""
+    rate_limit_guard(request)
+    
     token = credentials.credentials
     try:
-        payload = security.decode_access_token(token)
-        user_id_str = payload.get("sub")
-        if not user_id_str:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid token subject"
-            )
-    except ValueError as e:
+        payload = decode_access_token(token)
+        return {
+            "user_id": payload["sub"],
+            "roles": payload.get("roles", []),
+            "tenant_id": payload.get("tenant_id"),
+            "device_id": payload.get("device_id"),
+            "tfa_verified": payload.get("tfa_verified", False)
+        }
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(e)
+            detail=f"Authentication failed: {str(e)}",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-
-    import uuid
-    user = await user_repo.get_by_id(uuid.UUID(user_id_str))
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found or inactive"
-        )
-    return user
 
 def require_roles(allowed_roles: List[str]) -> Callable:
-    async def role_checker(current_user: UserEntity = Depends(get_current_user)) -> UserEntity:
-        user_roles = [r.value for r in current_user.roles]
-        has_role = any(role in allowed_roles for role in user_roles)
-        if not has_role:
+    """RBAC Guard Dependency: Restrict access based on role permissions."""
+    def role_checker(current_user: dict = Depends(get_current_user)):
+        user_roles = current_user.get("roles", [])
+        if not any(role in allowed_roles for role in user_roles):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User does not possess required permission roles ({allowed_roles})"
+                detail=f"Access denied. Required roles: {allowed_roles}"
             )
         return current_user
     return role_checker

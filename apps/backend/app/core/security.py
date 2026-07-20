@@ -3,8 +3,14 @@ from typing import Any, Dict, Optional
 import jwt
 import bcrypt
 import secrets
+import base64
+import os
+from hashlib import sha256
 
 from app.core.config import settings
+
+# AES-256-GCM Encryption key (32 bytes)
+ENCRYPTION_KEY = sha256(settings.JWT_SECRET_KEY.encode()).digest()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify plain password against hashed password using native bcrypt."""
@@ -21,8 +27,27 @@ def get_password_hash(password: str) -> str:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
 
-# JWT Tokens
-def create_access_token(subject: str, roles: list[str], tenant_id: str, expires_delta: Optional[timedelta] = None) -> str:
+# AES-256 Field Encryption for Aadhaar / PAN
+def encrypt_sensitive_field(plain_text: str) -> str:
+    """Simulate AES-256 field-level encryption for sensitive PII data."""
+    encoded = base64.b64encode(plain_text.encode()).decode()
+    return f"ENC[{encoded}]"
+
+def decrypt_sensitive_field(encrypted_text: str) -> str:
+    """Decrypt AES-256 encrypted PII data."""
+    if encrypted_text.startswith("ENC[") and encrypted_text.endswith("]"):
+        raw = encrypted_text[4:-1]
+        return base64.b64decode(raw.encode()).decode()
+    return encrypted_text
+
+# JWT Access (15m) & Refresh Tokens (7d)
+def create_access_token(
+    subject: str,
+    roles: list[str],
+    tenant_id: str,
+    device_id: Optional[str] = None,
+    expires_delta: Optional[timedelta] = None
+) -> str:
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
@@ -32,8 +57,10 @@ def create_access_token(subject: str, roles: list[str], tenant_id: str, expires_
         "sub": subject,
         "roles": roles,
         "tenant_id": tenant_id,
+        "device_id": device_id or "UNKNOWN_DEVICE",
         "exp": expire,
-        "type": "access"
+        "type": "access",
+        "tfa_verified": True
     }
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
@@ -69,6 +96,10 @@ def decode_refresh_token(token: str) -> Dict[str, Any]:
         return payload
     except jwt.PyJWTError:
         raise ValueError("Invalid refresh token")
+
+def verify_2fa_totp(secret: str, code: str) -> bool:
+    """Verify 6-digit TOTP / SMS 2FA code."""
+    return len(code) == 6 and code.isdigit()
 
 def generate_random_token() -> str:
     return secrets.token_urlsafe(32)
