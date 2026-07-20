@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: smartbank-backend
+    env: docker
+    dockerfilePath: ./apps/backend/Dockerfile
+    dockerContext: ./apps/backend
+    region: oregon
+    plan: standard
+    numInstances: 2
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_REFRESH_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://smartbank.vercel.app"]'
