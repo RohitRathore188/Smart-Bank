@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 
 // Auth Pages
 import { LoginPage } from "./pages/auth/LoginPage";
@@ -51,68 +52,70 @@ import { AdminThemeSettingsPage } from "./pages/admin/AdminThemeSettingsPage";
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Auth Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            {/* Public Auth Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-          {/* Protected Customer Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<CustomerDashboardPage />} />
-            <Route path="/vaults" element={<CustomerAccountsPage />} />
-            <Route path="/transactions" element={<CustomerTransactionsPage />} />
-            <Route path="/cards" element={<CustomerCardsPage />} />
-            <Route path="/loans" element={<CustomerLoansPage />} />
-            <Route path="/beneficiaries" element={<CustomerBeneficiariesPage />} />
-            <Route path="/deposits" element={<CustomerDepositsPage />} />
-            <Route path="/notifications" element={<CustomerNotificationsPage />} />
-            <Route path="/settings" element={<CustomerSettingsPage />} />
-            <Route path="/copilot" element={<AIAssistantPage />} />
-          </Route>
+            {/* Protected Customer Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<CustomerDashboardPage />} />
+              <Route path="/vaults" element={<CustomerAccountsPage />} />
+              <Route path="/transactions" element={<CustomerTransactionsPage />} />
+              <Route path="/cards" element={<CustomerCardsPage />} />
+              <Route path="/loans" element={<CustomerLoansPage />} />
+              <Route path="/beneficiaries" element={<CustomerBeneficiariesPage />} />
+              <Route path="/deposits" element={<CustomerDepositsPage />} />
+              <Route path="/notifications" element={<CustomerNotificationsPage />} />
+              <Route path="/settings" element={<CustomerSettingsPage />} />
+              <Route path="/copilot" element={<AIAssistantPage />} />
+            </Route>
 
-          {/* Protected Employee Portal Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/employee/dashboard" element={<EmployeeDashboardPage />} />
-            <Route path="/employee/kyc" element={<EmployeeKYCPage />} />
-            <Route path="/employee/accounts" element={<EmployeeAccountsPage />} />
-            <Route path="/employee/transactions" element={<EmployeeTransactionsPage />} />
-            <Route path="/employee/complaints" element={<EmployeeComplaintsPage />} />
-            <Route path="/employee/reports" element={<EmployeeReportsPage />} />
-          </Route>
+            {/* Protected Employee Portal Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/employee/dashboard" element={<EmployeeDashboardPage />} />
+              <Route path="/employee/kyc" element={<EmployeeKYCPage />} />
+              <Route path="/employee/accounts" element={<EmployeeAccountsPage />} />
+              <Route path="/employee/transactions" element={<EmployeeTransactionsPage />} />
+              <Route path="/employee/complaints" element={<EmployeeComplaintsPage />} />
+              <Route path="/employee/reports" element={<EmployeeReportsPage />} />
+            </Route>
 
-          {/* Protected Manager Portal Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
-            <Route path="/manager/loans" element={<ManagerLoanApprovalPage />} />
-            <Route path="/manager/analytics" element={<ManagerAnalyticsPage />} />
-            <Route path="/manager/fraud" element={<ManagerFraudPage />} />
-            <Route path="/manager/employees" element={<ManagerEmployeePage />} />
-            <Route path="/manager/reports" element={<ManagerReportsPage />} />
-          </Route>
+            {/* Protected Manager Portal Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
+              <Route path="/manager/loans" element={<ManagerLoanApprovalPage />} />
+              <Route path="/manager/analytics" element={<ManagerAnalyticsPage />} />
+              <Route path="/manager/fraud" element={<ManagerFraudPage />} />
+              <Route path="/manager/employees" element={<ManagerEmployeePage />} />
+              <Route path="/manager/reports" element={<ManagerReportsPage />} />
+            </Route>
 
-          {/* Protected Admin Portal Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/users" element={<AdminUsersPage />} />
-            <Route path="/admin/employees" element={<AdminEmployeesPage />} />
-            <Route path="/admin/bank-settings" element={<AdminBankSettingsPage />} />
-            <Route path="/admin/rates" element={<AdminInterestRatesPage />} />
-            <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
-            <Route path="/admin/health" element={<AdminSystemHealthPage />} />
-            <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
-            <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
-            <Route path="/admin/theme" element={<AdminThemeSettingsPage />} />
-          </Route>
+            {/* Protected Admin Portal Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/admin/users" element={<AdminUsersPage />} />
+              <Route path="/admin/employees" element={<AdminEmployeesPage />} />
+              <Route path="/admin/bank-settings" element={<AdminBankSettingsPage />} />
+              <Route path="/admin/rates" element={<AdminInterestRatesPage />} />
+              <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
+              <Route path="/admin/health" element={<AdminSystemHealthPage />} />
+              <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+              <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
+              <Route path="/admin/theme" element={<AdminThemeSettingsPage />} />
+            </Route>
 
-          {/* Default Redirect */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+            {/* Default Redirect */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 };
 
