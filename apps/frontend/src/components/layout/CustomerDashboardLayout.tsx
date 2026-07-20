@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { AICopilotDrawer } from "../ai-copilot/AICopilotDrawer";
+import { RolePortalSwitcher } from "./RolePortalSwitcher";
 
 interface CustomerDashboardLayoutProps {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = (
   ];
 
   return (
-    <div className="min-h-screen bg-[#F6F8FC] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F4F8FF] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Live Indian FX Ticker Bar */}
       <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white px-4 py-1.5 text-[11px] font-mono flex items-center justify-between overflow-x-auto shadow-sm">
         <div className="flex items-center space-x-6 shrink-0">
@@ -62,11 +63,13 @@ export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = (
           </Link>
         </div>
 
-        {/* Action Controls & User Dropdown */}
+        {/* Role Switcher & User Controls */}
         <div className="flex items-center space-x-3">
+          <RolePortalSwitcher />
+
           <button
             onClick={() => setIsCopilotOpen(true)}
-            className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-xs font-bold text-blue-700 flex items-center space-x-2 transition-all duration-200 shadow-sm active:scale-95"
+            className="px-3.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-xs font-bold text-blue-700 flex items-center space-x-2 transition-all duration-200 shadow-sm active:scale-95"
           >
             <span>🤖 Gemini AI Assistant</span>
           </button>
@@ -76,7 +79,7 @@ export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = (
           <div className="flex items-center space-x-3">
             <div className="text-right hidden sm:block">
               <div className="text-xs font-bold text-slate-900">{user?.first_name || "Rohit"} {user?.last_name || "Rathore"}</div>
-              <div className="text-[10px] text-slate-500 font-mono">PAN: ABCDE1234F</div>
+              <div className="text-[10px] text-slate-500 font-mono">ROLE: RETAIL_USER</div>
             </div>
             <button
               onClick={logout}
@@ -91,10 +94,10 @@ export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = (
 
       {/* Main Page Layout Container */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar Dock Navigation */}
+        {/* Sidebar Navigation */}
         <aside className="w-64 border-r border-white/80 bg-white/40 backdrop-blur-[20px] p-4 space-y-2 hidden lg:block overflow-y-auto">
           <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
-            Main Services
+            Retail User Portal
           </div>
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
@@ -123,13 +126,11 @@ export const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = (
           </div>
         </aside>
 
-        {/* Dynamic Page Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-8">
           {children}
         </main>
       </div>
 
-      {/* Slide-over Gemini AI Copilot Drawer */}
       <AICopilotDrawer isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} />
     </div>
   );

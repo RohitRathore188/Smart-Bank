@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { RolePortalSwitcher } from "./RolePortalSwitcher";
 
 interface EmployeePortalLayoutProps {
   children: React.ReactNode;
@@ -40,9 +41,11 @@ export const EmployeePortalLayout: React.FC<EmployeePortalLayoutProps> = ({ chil
         </div>
 
         <div className="flex items-center space-x-3">
+          <RolePortalSwitcher />
+
           <div className="text-right hidden sm:block">
             <div className="text-xs font-bold text-slate-900">{user?.first_name || "Priya"} {user?.last_name || "Sharma"}</div>
-            <div className="text-[10px] text-slate-500 font-mono">STAFF ID: EMP-1082 (Head Cashier)</div>
+            <div className="text-[10px] text-emerald-700 font-mono font-bold">ROLE: BANK_EMPLOYEE (Head Cashier)</div>
           </div>
           <button
             onClick={logout}

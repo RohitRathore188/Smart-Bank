@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { RolePortalSwitcher } from "./RolePortalSwitcher";
 
 interface AdminPortalLayoutProps {
   children: React.ReactNode;
@@ -50,11 +51,13 @@ export const AdminPortalLayout: React.FC<AdminPortalLayoutProps> = ({ children }
           <span className="text-blue-600">📅</span>
           <span>Jul 20, 2026</span>
           <span className="text-slate-300">|</span>
-          <span className="text-purple-600 font-extrabold">15:41:00 IST</span>
+          <span className="text-purple-600 font-extrabold">15:52:00 IST</span>
         </div>
 
-        {/* Right: Notifications, Profile & Quick Actions */}
+        {/* Right: Role Switcher, Profile & Quick Actions */}
         <div className="flex items-center space-x-4">
+          <RolePortalSwitcher />
+
           <button className="p-2.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 relative shadow-sm">
             <span className="text-base">🔔</span>
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
@@ -68,7 +71,7 @@ export const AdminPortalLayout: React.FC<AdminPortalLayoutProps> = ({ children }
             </div>
             <div className="text-left hidden sm:block">
               <div className="text-xs font-bold text-slate-900">{user?.first_name || "Super"} {user?.last_name || "Administrator"}</div>
-              <div className="text-[10px] text-blue-600 font-mono font-bold">SUPER ADMIN BOARD</div>
+              <div className="text-[10px] text-purple-600 font-mono font-bold">ROLE: SUPER_ADMIN</div>
             </div>
             <button
               onClick={logout}
@@ -134,7 +137,6 @@ export const AdminPortalLayout: React.FC<AdminPortalLayoutProps> = ({ children }
                 <span>HEALTHY</span>
               </span>
             </div>
-            {/* Animated Heartbeat SVG */}
             <div className="h-6 w-full opacity-80">
               <svg viewBox="0 0 100 20" className="w-full h-full stroke-emerald-400 fill-none stroke-2">
                 <path d="M 0,10 L 30,10 L 35,2 L 40,18 L 45,6 L 50,14 L 55,10 L 100,10" />
@@ -147,7 +149,6 @@ export const AdminPortalLayout: React.FC<AdminPortalLayoutProps> = ({ children }
           </div>
         </aside>
 
-        {/* Dynamic Page Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-8">
           {children}
         </main>
