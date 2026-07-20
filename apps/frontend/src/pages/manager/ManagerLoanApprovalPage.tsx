@@ -1,72 +1,116 @@
 import React, { useState } from "react";
 import { ManagerPortalLayout } from "../../components/layout/ManagerPortalLayout";
+import { PageTransition } from "../../components/animations/PageTransition";
+import { FloatingCard } from "../../components/animations/MicroInteractions";
 
 export const ManagerLoanApprovalPage: React.FC = () => {
-  const [loans, setLoans] = useState([
-    { id: "ln_101", applicant: "Acme Logistics Corp", amount: "$250,000", score: "810/850", term: "36 mos", apr: "5.4%", purpose: "Fleet Expansion", status: "PENDING" },
-    { id: "ln_102", applicant: "Cybernet Systems Inc", amount: "$120,000", score: "790/850", term: "24 mos", apr: "5.8%", purpose: "Server Hardware", status: "PENDING" },
-    { id: "ln_103", applicant: "Elena Rostova (VIP)", amount: "$45,000", score: "775/850", term: "12 mos", apr: "4.9%", purpose: "Real Estate Liquidity", status: "PENDING" },
-  ]);
+  const [selectedLoan, setSelectedLoan] = useState<any>(null);
+  const [loanDecisionMsg, setLoanDecisionMsg] = useState("");
 
-  const handleDecision = (id: string, decision: "APPROVED" | "DENIED") => {
-    alert(`Loan Application ${id} has been ${decision}! Disbursement instruction sent.`);
-    setLoans(loans.filter(l => l.id !== id));
-  };
+  const loanQueue = [
+    { id: "LN-910284", applicant: "Global Infra Solutions Pvt Ltd", amount: "₹1,50,00,000.00", type: "MSME Supply Chain Credit", score: 820, risk: "LOW RISK (CGTMSE Collateral)" },
+    { id: "LN-481920", applicant: "Dr. Vikramaditya Singh", amount: "₹45,00,000.00", type: "Home Loan Top-Up", score: 785, risk: "MEDIUM RISK" },
+  ];
 
   return (
     <ManagerPortalLayout>
-      <div className="space-y-6 max-w-7xl mx-auto font-sans">
-        <div>
-          <h1 className="text-3xl font-extrabold text-white">Loan Approvals & Credit Underwriting</h1>
-          <p className="text-sm text-slate-400">Review high-value corporate credit lines and override APR risk tiers</p>
-        </div>
+      <PageTransition>
+        <div className="space-y-6 max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                High-Value Credit Line Underwriting Queue
+              </h1>
+              <p className="text-sm text-slate-400">Branch Credit Sanctions Above ₹10 Lakhs • CIBIL & AI Cashflow Evaluation</p>
+            </div>
+          </div>
 
-        <div className="space-y-4">
-          {loans.map((l) => (
-            <div key={l.id} className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 space-y-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-extrabold text-white text-lg">{l.applicant} — <span className="font-mono text-amber-400">{l.amount}</span></h3>
-                  <div className="text-xs text-slate-400">Purpose: {l.purpose} • Term: {l.term}</div>
-                </div>
-                <span className="font-mono text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  AI Score: {l.score}
-                </span>
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Credit Queue (2 Cols) */}
+            <div className="lg:col-span-2 space-y-4">
+              <FloatingCard className="p-6 space-y-4">
+                <h3 className="font-bold text-white text-base">Underwriting Applications Queue</h3>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 grid grid-cols-3 gap-4 text-center text-xs">
-                <div>
-                  <div className="text-slate-400 uppercase">Calculated APR</div>
-                  <div className="text-sm font-mono font-bold text-white mt-0.5">{l.apr}</div>
+                <div className="space-y-3">
+                  {loanQueue.map((loan, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => setSelectedLoan(loan)}
+                      className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                        selectedLoan?.id === loan.id
+                          ? "bg-emerald-500/10 border-emerald-500/50 text-white"
+                          : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                      }`}
+                    >
+                      <div className="flex justify-between font-bold text-sm">
+                        <span>{loan.id} — {loan.applicant}</span>
+                        <span className="font-mono text-emerald-400">{loan.amount}</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-slate-400 font-mono mt-1">
+                        <span>{loan.type} | CIBIL: {loan.score}</span>
+                        <span className="text-emerald-400 font-bold">{loan.risk}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <div className="text-slate-400 uppercase">Underwriting Risk</div>
-                  <div className="text-sm font-mono font-bold text-emerald-400 mt-0.5">LOW (Tier 1)</div>
-                </div>
-                <div>
-                  <div className="text-slate-400 uppercase">Collateral Hold</div>
-                  <div className="text-sm font-mono font-bold text-amber-400 mt-0.5">USD Vault Reserve</div>
-                </div>
-              </div>
+              </FloatingCard>
+            </div>
 
-              <div className="flex space-x-3 pt-2">
+            {/* Decision Hub (1 Col) */}
+            <div className="space-y-6">
+              {selectedLoan ? (
+                <FloatingCard className="p-6 space-y-4">
+                  <h3 className="font-bold text-white text-base">Manager Sanction Signoff</h3>
+                  <div className="p-3 rounded-xl bg-white/5 font-mono text-xs space-y-1">
+                    <div>Applicant: <span className="text-white font-bold">{selectedLoan.applicant}</span></div>
+                    <div>Facility: <span className="text-white">{selectedLoan.type}</span></div>
+                    <div>Sanction Amount: <span className="text-emerald-400 font-bold">{selectedLoan.amount}</span></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setLoanDecisionMsg(`Loan ${selectedLoan.id} Sanctioned & Disbursed!`)}
+                      className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 rounded-xl font-bold text-xs text-white"
+                    >
+                      Approve & Sanction Credit Line
+                    </button>
+                    <button
+                      onClick={() => setLoanDecisionMsg(`Loan ${selectedLoan.id} Rejected`)}
+                      className="w-full py-3 bg-red-500/20 text-red-300 border border-red-500/40 rounded-xl font-bold text-xs"
+                    >
+                      Reject Application
+                    </button>
+                  </div>
+                </FloatingCard>
+              ) : (
+                <div className="p-6 rounded-2xl bg-slate-900/60 border border-white/10 text-center text-xs text-slate-400">
+                  Select a credit application to inspect score and sanction.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Decision Confirmation Modal */}
+          {loanDecisionMsg && (
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div className="w-full max-w-md bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-3xl flex items-center justify-center mx-auto">
+                  💎
+                </div>
+                <h3 className="text-lg font-bold text-white">Underwriting Decision Logged!</h3>
+                <p className="text-xs text-slate-300">{loanDecisionMsg}</p>
                 <button
-                  onClick={() => handleDecision(l.id, "DENIED")}
-                  className="flex-1 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 font-bold text-xs rounded-xl border border-red-500/30"
+                  onClick={() => setLoanDecisionMsg("")}
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 font-bold text-white text-xs rounded-xl"
                 >
-                  Deny Application
-                </button>
-                <button
-                  onClick={() => handleDecision(l.id, "APPROVED")}
-                  className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-600 font-bold text-xs text-white rounded-xl shadow-lg shadow-amber-500/20"
-                >
-                  Approve & Disburse Credit Line
+                  Done
                 </button>
               </div>
             </div>
-          ))}
+          )}
         </div>
-      </div>
+      </PageTransition>
     </ManagerPortalLayout>
   );
 };
