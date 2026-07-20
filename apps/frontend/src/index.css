@@ -2,25 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-primary: #F6F8FC;
+  --color-primary: #2563EB;
+  --color-secondary: #7C3AED;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-blur: 20px;
+}
+
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    background-color: var(--bg-primary);
+    color: #0F172A;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Light Quartz Glassmorphism Token Classes */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.05);
+/* Apple HIG Glassmorphism Utility Tokens */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 40px 0 rgba(37, 99, 235, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
 }
 
-.glass-panel-elevated {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 20px 50px 0 rgba(16, 185, 129, 0.12);
+.apple-glass-interactive {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 45px 0 rgba(37, 99, 235, 0.08);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.apple-glass-interactive:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 30px 60px 0 rgba(37, 99, 235, 0.14);
 }

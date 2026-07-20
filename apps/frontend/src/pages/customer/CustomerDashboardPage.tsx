@@ -6,6 +6,7 @@ import { FloatingCard } from "../../components/animations/MicroInteractions";
 import { CreditCard3DCanvas } from "../../components/3d/CreditCard3DCanvas";
 import { Vault3DCanvas } from "../../components/3d/Vault3DCanvas";
 import { FloatingCoinsCanvas } from "../../components/3d/FloatingCoinsCanvas";
+import { InteractiveGlobeCanvas } from "../../components/3d/InteractiveGlobeCanvas";
 import { AnimatedCashflowChart } from "../../components/charts/AnimatedCashflowChart";
 
 export const CustomerDashboardPage: React.FC = () => {
@@ -22,20 +23,23 @@ export const CustomerDashboardPage: React.FC = () => {
                   SmartBank Bharat Vault
                 </h1>
               </div>
-              <p className="text-sm text-slate-500">RBI Regulated • Autonomous UPI & Wealth Management</p>
+              <p className="text-sm text-slate-500 font-medium">RBI Regulated • Autonomous UPI & Wealth Management</p>
             </div>
             <div className="flex items-center space-x-3">
               <Link
                 to="/transfers"
-                className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-400 hover:to-cyan-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-500/20 transition-all duration-200 active:scale-95 flex items-center space-x-1.5"
+                className="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all duration-200 active:scale-95 flex items-center space-x-1.5"
               >
                 <span>⚡ Pay via UPI</span>
               </Link>
             </div>
           </div>
 
-          {/* 3D Floating Gold Coins Yield Bar */}
-          <FloatingCoinsCanvas />
+          {/* 3D Interbank Mesh Globe & Floating Gold Coins */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <InteractiveGlobeCanvas />
+            <FloatingCoinsCanvas />
+          </div>
 
           {/* Main 2-Column Dashboard Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -43,7 +47,7 @@ export const CustomerDashboardPage: React.FC = () => {
             <div className="lg:col-span-2 space-y-6">
               {/* Floating Net Worth Hero Card */}
               <FloatingCard className="p-6 sm:p-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
                 
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
                   Total Portfolio Value (INR)
@@ -62,17 +66,17 @@ export const CustomerDashboardPage: React.FC = () => {
 
                 {/* Multi-Currency & Fixed Deposit Breakout Pills */}
                 <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-200">
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">INR Primary Account</div>
-                    <div className="text-sm font-bold text-slate-900 font-mono">₹9,24,000.00</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">₹9,24,000.00</div>
                   </div>
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">Fixed Deposits (FD)</div>
-                    <div className="text-sm font-bold text-slate-900 font-mono">₹5,65,200.00</div>
+                    <div className="text-sm font-extrabold text-slate-900 font-mono">₹5,65,200.00</div>
                   </div>
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
                     <div className="text-[10px] font-semibold text-amber-600 uppercase">RupeeFD Yield</div>
-                    <div className="text-sm font-bold text-amber-600 font-mono">7.85% p.a.</div>
+                    <div className="text-sm font-extrabold text-amber-600 font-mono">7.85% p.a.</div>
                   </div>
                 </div>
               </FloatingCard>
@@ -91,7 +95,7 @@ export const CustomerDashboardPage: React.FC = () => {
                     className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 flex flex-col items-center justify-center space-y-2 transition-all duration-200 hover:-translate-y-1 active:scale-95 shadow-sm"
                   >
                     <span className="text-2xl">{action.icon}</span>
-                    <span className="text-xs font-semibold text-slate-700">{action.label}</span>
+                    <span className="text-xs font-bold text-slate-800">{action.label}</span>
                   </Link>
                 ))}
               </div>
