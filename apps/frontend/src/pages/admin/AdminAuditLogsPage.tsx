@@ -17,25 +17,25 @@ export const AdminAuditLogsPage: React.FC = () => {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Immutable Change Data Capture (CDC) Audit Logs
               </h1>
-              <p className="text-sm text-slate-400">Cryptographically Sealed Audit Trail & IP Security Logs</p>
+              <p className="text-sm text-slate-600 font-medium">Cryptographically Sealed Audit Trail & IP Security Logs</p>
             </div>
           </div>
 
           <FloatingCard className="p-6 space-y-4">
-            <h3 className="font-bold text-white text-base">Live CDC Audit Log Stream</h3>
+            <h3 className="font-extrabold text-slate-900 text-base">Live CDC Audit Log Stream</h3>
 
             <div className="space-y-3 font-mono text-xs">
               {auditLogs.map((log, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
                   <div>
-                    <span className="text-emerald-400 font-bold">[{log.timestamp}]</span>{" "}
-                    <span className="text-white font-bold">{log.actor}</span> performed{" "}
-                    <span className="text-cyan-300">{log.action}</span> on <span className="text-amber-300">{log.table}</span>
+                    <span className="text-emerald-700 font-bold">[{log.timestamp}]</span>{" "}
+                    <span className="text-slate-900 font-extrabold">{log.actor}</span> performed{" "}
+                    <span className="text-purple-700 font-bold">{log.action}</span> on <span className="text-amber-700 font-bold">{log.table}</span>
                   </div>
-                  <div className="text-slate-400">IP: {log.ip}</div>
+                  <div className="text-slate-500 font-medium">IP: {log.ip}</div>
                 </div>
               ))}
             </div>
