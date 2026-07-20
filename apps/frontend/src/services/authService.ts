@@ -3,7 +3,7 @@ import {
   ForgotPasswordRequest, ResetPasswordRequest, VerifyEmailRequest
 } from "../types/auth";
 
-const API_BASE_URL = "http://localhost:8000/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
 
 class AuthService {
   private getAuthHeaders(): HeadersInit {
@@ -15,31 +15,45 @@ class AuthService {
   }
 
   async register(data: RegisterRequest): Promise<User> {
-    const res = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || "Registration failed");
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ detail: "Registration failed" }));
+        throw new Error(error.detail || "Registration failed");
+      }
+      return res.json();
+    } catch (err: any) {
+      if (err.name === "TypeError" && err.message === "Failed to fetch") {
+        throw new Error("Cannot connect to SmartBank Backend API (http://localhost:8000). Please ensure backend is running.");
+      }
+      throw err;
     }
-    return res.json();
   }
 
   async login(data: LoginRequest): Promise<TokenResponse> {
-    const res = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || "Invalid credentials");
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ detail: "Invalid credentials" }));
+        throw new Error(error.detail || "Invalid credentials");
+      }
+      const tokenData: TokenResponse = await res.json();
+      this.saveSession(tokenData);
+      return tokenData;
+    } catch (err: any) {
+      if (err.name === "TypeError" && err.message === "Failed to fetch") {
+        throw new Error("Cannot connect to SmartBank Backend API (http://localhost:8000). Please ensure backend is running.");
+      }
+      throw err;
     }
-    const tokenData: TokenResponse = await res.json();
-    this.saveSession(tokenData);
-    return tokenData;
   }
 
   async getCurrentUser(): Promise<User> {
